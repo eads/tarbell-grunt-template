@@ -4,7 +4,9 @@ import dateutil.parser
 import dateutil.tz
 import markdown as Markdown
 import os
+import sh
 
+from clint.textui import puts, colored
 from flask import Blueprint
 from jinja2 import contextfunction, Template, Markup
 from tarbell.hooks import register_hook
@@ -12,6 +14,20 @@ from tarbell.hooks import register_hook
 NAME = "Grunt build template"
 
 blueprint = Blueprint('base', __name__)
+
+
+@register_hook('server_start')
+def grunt_watch(site):
+    grunt = sh.grunt.bake('watch', _cwd=site.path, _bg=True)
+    proc = grunt()
+    site.grunt_pid = proc.pid
+    puts("Starting Grunt watch (pid: {0})".format(colored.yellow(proc.pid)))
+
+
+@register_hook('server_stop')
+def grunt_stop(site):
+    puts("Stopping Grunt watch")
+    sh.kill(site.grunt_pid)
 
 
 @contextfunction
