@@ -13,6 +13,8 @@ from tarbell.hooks import register_hook
 
 NAME = "Grunt build template"
 
+EXCLUDES = ["Gruntfile.js", "package.json", "node_modules/*", "less/*"]
+
 blueprint = Blueprint('base', __name__)
 
 
@@ -28,6 +30,14 @@ def grunt_watch(site):
 def grunt_stop(site):
     puts("Stopping Grunt watch")
     sh.kill(site.grunt_pid)
+
+
+@register_hook('newproject')
+def setup_grunt(site, git):
+    puts("Installing node packages")
+    sh.npm("install", _cwd=site.path)
+    puts("Running grunt")
+    sh.grunt(_cwd=site.path)
 
 
 @contextfunction
