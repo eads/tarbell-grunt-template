@@ -5,6 +5,7 @@ import dateutil.tz
 import markdown as Markdown
 import os
 import sh
+import shutil
 
 from clint.textui import puts, colored
 from flask import Blueprint
@@ -20,6 +21,7 @@ blueprint = Blueprint('base', __name__)
 
 @register_hook('server_start')
 def grunt_watch(site):
+    """Start grunt watch"""
     grunt = sh.grunt.bake('watch', _cwd=site.path, _bg=True)
     proc = grunt()
     site.grunt_pid = proc.pid
@@ -28,16 +30,39 @@ def grunt_watch(site):
 
 @register_hook('server_stop')
 def grunt_stop(site):
+    """Stop grunt watch"""
     puts("Stopping Grunt watch")
     sh.kill(site.grunt_pid)
 
 
-@register_hook('newproject')
 def setup_grunt(site, git):
+    """Set up grunt"""
     puts("Installing node packages")
     sh.npm("install", _cwd=site.path)
     puts("Running grunt")
     sh.grunt(_cwd=site.path)
+
+
+@register_hook('newproject')
+def newproject_grunt(site, git):
+    """Copy grunt files to new project and run setup"""
+    blueprint_path = os.path.join(site.path, '_blueprint')
+
+    puts("Copying Gruntfile.js to new project")
+    shutil.copyfile(os.path.join(blueprint_path, 'Gruntfile.js'),
+                    os.path.join(site.path, 'Gruntfile.js'))
+
+    puts("Copying package.json to new project")
+    shutil.copyfile(os.path.join(blueprint_path, 'package.json'),
+                    os.path.join(site.path, 'package.json'))
+
+    setup_grunt(site, git)
+
+
+@register_hook('install')
+def install_grunt(site, git):
+    """Run grunt setup on project install"""
+    setup_grunt(site, git)
 
 
 @contextfunction
