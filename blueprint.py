@@ -39,9 +39,9 @@ def setup_grunt(site, git):
     """Set up grunt"""
     os.chdir(site.path)
     puts("Installing node packages")
-    puts(sh.npm("install", _cwd=site.path))
+    print(sh.npm("install", _cwd=site.path))
     puts("Running grunt")
-    puts(sh.grunt(_cwd=site.path))
+    print(sh.grunt(_cwd=site.path))
 
 
 @register_hook('newproject')
