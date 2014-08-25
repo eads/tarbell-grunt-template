@@ -39,9 +39,9 @@ def setup_grunt(site, git):
     """Set up grunt"""
     os.chdir(site.path)
     puts("Installing node packages")
-    sh.npm("install", _cwd=site.path)
+    puts(sh.npm("install", _cwd=site.path))
     puts("Running grunt")
-    sh.grunt(_cwd=site.path)
+    puts(sh.grunt(_cwd=site.path))
 
 
 @register_hook('newproject')
@@ -56,6 +56,10 @@ def newproject_grunt(site, git):
     puts("Copying package.json to new project")
     shutil.copyfile(os.path.join(blueprint_path, 'package.json'),
                     os.path.join(site.path, 'package.json'))
+
+    puts(git.add("Gruntfile.js"))
+    puts(git.add("package.json"))
+    puts(git.commit(m='Add Gruntfile.js and package.json'))
 
     setup_grunt(site, git)
 
