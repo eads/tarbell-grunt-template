@@ -37,6 +37,7 @@ def grunt_stop(site):
 
 def setup_grunt(site, git):
     """Set up grunt"""
+    os.chdir(site.path)
     puts("Installing node packages")
     sh.npm("install", _cwd=site.path)
     puts("Running grunt")
