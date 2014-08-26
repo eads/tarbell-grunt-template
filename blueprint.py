@@ -11,6 +11,7 @@ from clint.textui import puts, colored
 from flask import Blueprint
 from jinja2 import contextfunction, Template, Markup
 from tarbell.hooks import register_hook
+from tarbell.cli import _mkdir
 
 NAME = "Grunt build template"
 
@@ -60,6 +61,21 @@ def newproject_grunt(site, git):
     puts(git.add("Gruntfile.js"))
     puts(git.add("package.json"))
     puts(git.commit(m='Add Gruntfile.js and package.json'))
+
+    _mkdir(os.path.join(site.path, 'src'))
+
+    puts("Copying default assets")
+    _mkdir(os.path.join(site.path, 'src/less'))
+    shutil.copyfile(os.path.join(blueprint_path, 'src/less/main.less'),
+                    os.path.join(site.path, 'src/less/main.less'))
+
+    _mkdir(os.path.join(site.path, 'src/js'))
+    shutil.copyfile(os.path.join(blueprint_path, 'src/js/app.js'),
+                    os.path.join(site.path, 'src/js/app.js'))
+
+    puts(git.add("src/js/app.js"))
+    puts(git.add("src/less/main.less"))
+    puts(git.commit(m='Add default javascript and LESS assets'))
 
     setup_grunt(site, git)
 

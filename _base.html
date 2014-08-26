@@ -11,7 +11,9 @@
   <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/css/bootstrap.min.css" />
   {% endblock library_css %}
 
-  {% block css %}{% endblock %}
+  {% block css %}
+  <link rel="stylesheet" type="text/css" href="css/main.css" />
+  {% endblock %}
 
   {% block shim %}
   <!--[if lt IE 9]>
@@ -68,7 +70,9 @@
 <script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
 {% endblock library_scripts %}
 
-{% block scripts %}{% endblock %}
+{% block scripts %}
+<script src="js/tarbell-app.js"></script>
+{% endblock %}
 
 </body>
 </html>
